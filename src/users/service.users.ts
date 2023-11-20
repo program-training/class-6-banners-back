@@ -61,7 +61,7 @@ const usersService = {
     if (!user.isAdmin) {
       throw new Error('Access denied. Admin rights required.');
   }
-    return {     username: user.username     };
+    return {     username: user.username ,email: user.email    };
   },
   
   // resetPassword: async (email:any, newPassword:any) => {
