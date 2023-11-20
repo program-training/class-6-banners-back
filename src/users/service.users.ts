@@ -58,8 +58,10 @@ const usersService = {
     if (!user || user.password !== password) {
       throw new Error('Invalid email or password.');
     }
-
-    return { success: true, message: 'Login successful', user };
+    if (!user.isAdmin) {
+      throw new Error('Access denied. Admin rights required.');
+  }
+    return {     username: user.username     };
   },
   
   // resetPassword: async (email:any, newPassword:any) => {
