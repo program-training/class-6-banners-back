@@ -63,23 +63,24 @@ const usersService = {
   }
     return {     username: user.username ,email: user.email    };
   },
-  
-  // resetPassword: async (email:any, newPassword:any) => {
-  //   // 1. בדוק אם המשתמש קיים במערכת
-  //   const user = await usersDAL.getUserByEmail(email);
-  //   if (!user) {
-  //     throw new Error('User with this email does not exist.');
-  //   }
+  changePassword: async (userId: string, newPassword: string) => {
+    // בדיקה האם המשתמש קיים
+    const user = await usersDAL.getUserById(userId);
+    if (!user) {
+      throw new Error('משתמש לא נמצא.');
+    }
 
-  //   // 2. עדכון הסיסמה במסד הנתונים ללא הצפנה
-  //   const updatedUser = await usersDAL.updateUserById(user._id, { password: newPassword });
-  //   if (!updatedUser) {
-  //     throw new Error('Failed to update user password.');
-  //   }
+    // המרת המחרוזת ל-ObjectId
+    const objectId = new Types.ObjectId(userId);
 
-  //   return { success: true, message: 'Password reset successfully' };
-  // },
+    // עדכון הסיסמה במסד הנתונים
+    const updatedUser = await usersDAL.updateUserById(objectId, { password: newPassword });
+    if (!updatedUser) {
+      throw new Error('שגיאה בעדכון הסיסמה.');
+    }
 
+    return { success: true, message: 'הסיסמה עודכנה בהצלחה' };
+  },
 };
 export default usersService;
 
