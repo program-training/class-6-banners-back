@@ -7,6 +7,9 @@ const bannerService = {
     updateBanner: async (_id: string, updatedBanner: Banner): Promise<Banner | null> =>
         BannerModel.findOneAndUpdate({ _id }, updatedBanner, { new: true }),
     deleteBanner: async (_id: string): Promise<Banner | null> => BannerModel.findOneAndDelete({ _id }),
+    getBannersByCategory: async (category: string): Promise<Banner[]> => {
+        return await BannerModel.find({ category });
+    },
 };
 
 export default bannerService;

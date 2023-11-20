@@ -31,6 +31,24 @@ const getBannerById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+// Get banners by category
+const getBannersByCategory = async (req: Request, res: Response): Promise<void> => {
+    const category = req.params.category; // Get the category from request parameters
+    try {
+        const banners = await productService.getBannersByCategory(category);
+        console.log('Retrieved products:', banners);
+        if (banners.length > 0) {
+            res.status(200).json(banners);
+        } else {
+            res.status(404).json({ message: 'No banners found in this category' });
+        }
+    } catch (error) {
+        console.error('Error fetching banners by category:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
 // Create new product
 const createBanner = async (req: Request, res: Response): Promise<void> => {
     const newProduct = req.body;
@@ -78,5 +96,6 @@ export default {
     createBanner,
     updateBanner,
     deleteBanner,
+    getBannersByCategory
     // updateProductQuantity,
 };

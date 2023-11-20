@@ -6,6 +6,7 @@ const router: Router = express.Router();
 // עדכון הנתיבים והקונטרולרים להתייחסות ל-'banners'
 router.get('/', bannerController.getAllBanners); // שינוי שם הפונקציה
 router.get('/:id', bannerController.getBannerById); // שינוי שם הפונקציה
+router.get('/cat/:category', bannerController.getBannersByCategory); // שינוי שם הפונקציה
 router.post('/', bannerController.createBanner); // שינוי שם הפונקציה
 router.put('/:id', bannerController.updateBanner); // שינוי שם הפונקציה
 router.delete('/:id', bannerController.deleteBanner); // שינוי שם הפונקציה
