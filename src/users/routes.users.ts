@@ -5,7 +5,6 @@ const usersRouter = express.Router();
 
 usersRouter.get('/',usersController.getAlllUsers)
 usersRouter.get('/:id',usersController.getUserByID)
-
 usersRouter.put('/update/:id',usersController.updateUserById)
 usersRouter.put('/changepassword',usersController.changePassword)
 usersRouter.post('/register', usersController.registerUser);

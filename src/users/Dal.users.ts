@@ -13,7 +13,9 @@ const usersDAL = {
 
   getUserByEmail: async (email: string) => {
     try {
-      return await UserModel.findOne({ email });
+      const user= await UserModel.findOne({ email });
+      console.log('User found in DB:', user);
+      return user
     } catch (error) {
       console.error('Error fetching user by email:', error);
       throw error;
