@@ -1,7 +1,8 @@
 import usersService from './service.users';
-import { UserModel, userJoiSchema } from './users.model';
 import { Types } from 'mongoose';
 import Joi from 'joi';
+import { UserModel } from './users.model';
+import { generateUserPassword, comparePassword } from './secret'
 
 
 const changePasswordSchema = Joi.object({
@@ -64,9 +65,9 @@ const getUserByID = async (req: any, res: any) => {
 const registerUser = async (req: any, res: any) => {
     const { error } = registerUserSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
-
     try {
         const newUser = req.body;
+        newUser.password = generateUserPassword(newUser.password); // הצפן את הסיסמה
         const user = await usersService.registerUser(newUser);
         res.status(201).json(user);
     } catch (error) {
@@ -154,9 +155,8 @@ const changePassword = async (req: any, res: any) => {
 
     try {
         // קריאה לפונקציה החדשה שמשנה את הסיסמא לפי ה-email
-        const result = await usersService.changePasswordByEmail(email, newPassword);
-        console.log(result);
-
+        const hashedPassword = generateUserPassword(newPassword); // הצפן את הסיסמה החדשה
+        const result = await usersService.changePasswordByEmail(email, hashedPassword); // שלח את הסיסמה המוצפנת לשירות
         res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
         if (error instanceof Error) {
