@@ -74,6 +74,21 @@ const updateBanner = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+// Get banners by author
+const getBannersByAuthor = async (req: Request, res: Response): Promise<void> => {
+    const author = req.params.author;
+    try {
+        const banners = await productService.getBannersByAuthor(author);
+        if (banners.length > 0) {
+            res.status(200).json(banners);
+        } else {
+            res.status(404).json({ message: 'No banners found for this author' });
+        }
+    } catch (error) {
+        console.error('Error fetching banners by author:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 
 const deleteBanner = async (req: Request, res: Response): Promise<void> => {
@@ -89,6 +104,26 @@ const deleteBanner = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const incrementBannerRating = async (req: Request, res: Response): Promise<void> => {
+    const bannerId = req.params.id;
+    try {
+        const banner = await productService.getBannerById(bannerId);
+        if (!banner) {
+            res.status(404).json({ message: 'Banner not found' });
+            return;
+        }
+
+        const newRating = banner.rating ? banner.rating + 1 : 1;
+        await productService.updateOneBanner(bannerId, { rating: newRating });
+        const updatedBanner = await productService.getBannerById(bannerId);
+
+        res.status(200).json(updatedBanner);
+    } catch (error) {
+        console.error('Error incrementing banner rating:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 
 export default {
     getAllBanners,
@@ -96,6 +131,8 @@ export default {
     createBanner,
     updateBanner,
     deleteBanner,
-    getBannersByCategory
+    getBannersByCategory,
+    getBannersByAuthor,
+    incrementBannerRating
     // updateProductQuantity,
 };

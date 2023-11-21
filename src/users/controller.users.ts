@@ -1,10 +1,15 @@
 import usersService from './service.users';
-import { UserModel, userJoiSchema } from './users.model';
 import { Types } from 'mongoose';
 import Joi from 'joi';
+import { UserModel } from './users.model';
+import { generateUserPassword, comparePassword } from './secret'
+
+
 const changePasswordSchema = Joi.object({
-    newPassword: Joi.string().min(5).required(), // Assuming a minimum of 5 characters for the password
+    email: Joi.string().email().required(), // ולידציה שהמחרוזת היא אימייל חוקי
+    newPassword: Joi.string().min(5).required(), // ולידציה של סיסמה חדשה עם מינימום 5 תווים
 });
+
 
 const loginUserSchema = Joi.object({
     email: Joi.string().email().required(),
@@ -60,9 +65,9 @@ const getUserByID = async (req: any, res: any) => {
 const registerUser = async (req: any, res: any) => {
     const { error } = registerUserSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
-
     try {
         const newUser = req.body;
+        newUser.password = generateUserPassword(newUser.password); // הצפן את הסיסמה
         const user = await usersService.registerUser(newUser);
         res.status(201).json(user);
     } catch (error) {
@@ -121,7 +126,7 @@ const loginUser = async (req: any, res: any) => {
         }
     }
 };
-const deleteUserById = async (req:any, res:any) => {
+const deleteUserById = async (req: any, res: any) => {
     const userId = req.params.id;
     try {
         const result = await usersService.deleteUserById(userId);
@@ -136,21 +141,22 @@ const deleteUserById = async (req:any, res:any) => {
             res.status(500).json({ message: 'An unknown error occurred' });
         }
     }
-    
+
 };
 const changePassword = async (req: any, res: any) => {
-    const userId = req.params.id;
-    const { newPassword } = req.body;
+    console.log("hi");
+    
+    const { email, newPassword } = req.body;
+    console.log(email, newPassword);
 
-    // Validate the new password
-    const { error } = changePasswordSchema.validate({ newPassword });
+    // Validate the new password and email
+    const { error } = changePasswordSchema.validate({ email, newPassword });
     if (error) return res.status(400).json({ message: error.details[0].message });
 
     try {
-        const result = await usersService.changePassword(userId, newPassword);
-        if (!result) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        // קריאה לפונקציה החדשה שמשנה את הסיסמא לפי ה-email
+        const hashedPassword = generateUserPassword(newPassword); // הצפן את הסיסמה החדשה
+        const result = await usersService.changePasswordByEmail(email, hashedPassword); // שלח את הסיסמה המוצפנת לשירות
         res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
         if (error instanceof Error) {
@@ -160,6 +166,9 @@ const changePassword = async (req: any, res: any) => {
         }
     }
 };
+
+
+
 
 
 // const getAllUsersAdmin = async (req: any, res: any) => {

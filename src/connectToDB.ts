@@ -8,14 +8,7 @@ const userSchema = new Schema<Users>({
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true },
 }, { versionKey: false });
-// יצירת מודל משתמש
-// // סכמת Joi למשתמש
-// const userJoiSchema = Joi.object({
-    //     username: Joi.string().min(3).max(30).required(),
-//     password: Joi.string().min(3).max(30).required(),
-//     email: Joi.string().email().required(),
-//     isAdmin: Joi.boolean().required(),
-// });
+
 export { UserModel };
 
 export const connectToDatabase = async () => {
