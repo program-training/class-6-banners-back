@@ -104,6 +104,26 @@ const deleteBanner = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const incrementBannerRating = async (req: Request, res: Response): Promise<void> => {
+    const bannerId = req.params.id;
+    try {
+        const banner = await productService.getBannerById(bannerId);
+        if (!banner) {
+            res.status(404).json({ message: 'Banner not found' });
+            return;
+        }
+
+        const newRating = banner.rating ? banner.rating + 1 : 1;
+        await productService.updateOneBanner(bannerId, { rating: newRating });
+        const updatedBanner = await productService.getBannerById(bannerId);
+
+        res.status(200).json(updatedBanner);
+    } catch (error) {
+        console.error('Error incrementing banner rating:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 
 export default {
     getAllBanners,
@@ -112,6 +132,7 @@ export default {
     updateBanner,
     deleteBanner,
     getBannersByCategory,
-    getBannersByAuthor
+    getBannersByAuthor,
+    incrementBannerRating
     // updateProductQuantity,
 };

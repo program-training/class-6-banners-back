@@ -9,7 +9,8 @@ router.get('/:id', bannerController.getBannerById); // שינוי שם הפונ�
 router.get('/cat/:category', bannerController.getBannersByCategory); // שינוי שם הפונקציה
 router.get('/author/:author', bannerController.getBannersByAuthor);
 router.post('/', bannerController.createBanner); // שינוי שם הפונקציה
-router.put('/:id', bannerController.updateBanner); // שינוי שם הפונקציה
+router.put('/:id', bannerController.updateBanner); 
+router.put('/addrating/:id', bannerController.incrementBannerRating); 
 router.delete('/:id', bannerController.deleteBanner); // שינוי שם הפונקציה
 // router.patch('/:id', bannerController.updateBannerQuantity); // השורה הזו תשתנה או תוסר אם לא רלוונטית ל-'banners'
 
