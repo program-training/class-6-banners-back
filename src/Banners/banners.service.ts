@@ -19,6 +19,9 @@ const bannerService = {
     getBannersByCategory: async (category: string): Promise<Banner[]> => {
         return await BannerModel.find({ category });
     },
+    getBannersByAuthor: async (author: string): Promise<Banner[]> => {
+        return await BannerModel.find({ author: author });
+    },
 };
 
 

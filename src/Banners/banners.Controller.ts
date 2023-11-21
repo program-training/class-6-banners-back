@@ -74,6 +74,21 @@ const updateBanner = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+// Get banners by author
+const getBannersByAuthor = async (req: Request, res: Response): Promise<void> => {
+    const author = req.params.author;
+    try {
+        const banners = await productService.getBannersByAuthor(author);
+        if (banners.length > 0) {
+            res.status(200).json(banners);
+        } else {
+            res.status(404).json({ message: 'No banners found for this author' });
+        }
+    } catch (error) {
+        console.error('Error fetching banners by author:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 
 const deleteBanner = async (req: Request, res: Response): Promise<void> => {
@@ -96,6 +111,7 @@ export default {
     createBanner,
     updateBanner,
     deleteBanner,
-    getBannersByCategory
+    getBannersByCategory,
+    getBannersByAuthor
     // updateProductQuantity,
 };
