@@ -42,7 +42,8 @@ const bannerJoiSchema = Joi.object({
     author: Joi.string().required(),
     category: Joi.string().required(),
     rating: Joi.number().required(),
-    sale: Joi.number()
+    sale: Joi.number(),
+    productID: Joi.string().required(),
 });
 
 export { BannerModel, bannerJoiSchema };
