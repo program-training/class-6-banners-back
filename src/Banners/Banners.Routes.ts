@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Router } from 'express';
 import bannerController from './banners.Controller'; // שינוי שם היבוא
 
 const router: Router = express.Router();
@@ -8,6 +8,8 @@ router.get('/', bannerController.getAllBanners); // שינוי שם הפונקצ
 router.get('/:id', bannerController.getBannerById); // שינוי שם הפונקציה
 router.get('/cat/:category', bannerController.getBannersByCategory); // שינוי שם הפונקציה
 router.get('/author/:author', bannerController.getBannersByAuthor);
+router.get('/product/:productID', bannerController.getBannerByProductID);
+
 router.post('/', bannerController.createBanner); // שינוי שם הפונקציה
 router.put('/:id', bannerController.updateBanner); 
 router.put('/addrating/:id', bannerController.incrementBannerRating); 

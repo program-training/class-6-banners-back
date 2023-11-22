@@ -13,7 +13,7 @@ export interface Banner extends Document {
     category: string;
     rating: number;
     sale?: number;
-}
+    }
 
 const bannerSchema = new Schema<Banner>({
     id: { type: Number, required: true },

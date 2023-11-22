@@ -61,13 +61,12 @@ const getUserByID = async (req: any, res: any) => {
         }
     }
 };
-
 const registerUser = async (req: any, res: any) => {
     const { error } = registerUserSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
     try {
         const newUser = req.body;
-        newUser.password = generateUserPassword(newUser.password); // הצפן את הסיסמה
+        // הסירו את שורת הצפנת הסיסמה
         const user = await usersService.registerUser(newUser);
         res.status(201).json(user);
     } catch (error) {
@@ -78,6 +77,7 @@ const registerUser = async (req: any, res: any) => {
         }
     }
 };
+
 
 const updateUserById = async (req: any, res: any) => {
     const { error } = updateUserSchema.validate(req.body);
@@ -101,9 +101,9 @@ const updateUserById = async (req: any, res: any) => {
         }
     }
 };
-
 const loginUser = async (req: any, res: any) => {
     const { email, password } = req.body;
+    console.log('Attempting to login with email:', email, 'and password:', password);
 
     // בדיקת ולידציה עם Joi
     const { error } = loginUserSchema.validate({ email, password });
@@ -112,20 +112,18 @@ const loginUser = async (req: any, res: any) => {
     try {
         const user = await usersService.loginUser(email, password);
         if (!user) {
-            // אם אין משתמש, שלח תגובה עם קוד 401
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        res.status(200).json(user);
+        return res.status(200).json(user);
     } catch (error) {
         if (error instanceof Error) {
-            // טיפול בשגיאות ספציפיות
             res.status(401).json({ message: error.message });
         } else {
-            // טיפול בשגיאות לא ידועות
             res.status(500).json({ message: 'An unknown error occurred' });
         }
     }
 };
+
 const deleteUserById = async (req: any, res: any) => {
     const userId = req.params.id;
     try {
@@ -142,8 +140,7 @@ const deleteUserById = async (req: any, res: any) => {
         }
     }
 
-};
-const changePassword = async (req: any, res: any) => {
+};const changePassword = async (req: any, res: any) => {
     console.log("hi");
     
     const { email, newPassword } = req.body;
@@ -154,9 +151,8 @@ const changePassword = async (req: any, res: any) => {
     if (error) return res.status(400).json({ message: error.details[0].message });
 
     try {
-        // קריאה לפונקציה החדשה שמשנה את הסיסמא לפי ה-email
-        const hashedPassword = generateUserPassword(newPassword); // הצפן את הסיסמה החדשה
-        const result = await usersService.changePasswordByEmail(email, hashedPassword); // שלח את הסיסמה המוצפנת לשירות
+        // שינוי הסיסמה במסד הנתונים ללא הצפנה
+        const result = await usersService.changePasswordByEmail(email, newPassword);
         res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
         if (error instanceof Error) {

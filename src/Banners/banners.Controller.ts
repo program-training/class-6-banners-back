@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import productService from './banners.service';
-import { BannerModel, bannerJoiSchema } from './Banners.model';
+import { BannerModel, bannerJoiSchema,Banner } from './Banners.model';
 
 // Get all products
 const getAllBanners = async (req: Request, res: Response): Promise<void> => {
@@ -125,6 +125,24 @@ const incrementBannerRating = async (req: Request, res: Response): Promise<void>
 };
 
 
+const getBannerByProductID = async (req: Request, res: Response): Promise<void> => {
+    const productID = req.params.productID;
+    try {
+        const banner = await productService.getBannerByProductID(productID);
+        if (banner) {
+            res.status(200).json(banner);
+        } else {
+            res.status(404).json({ message: 'Banner not found with the given product ID' });
+        }
+    } catch (error) {
+        console.error('Error fetching banner by product ID:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
+
 export default {
     getAllBanners,
     getBannerById,
@@ -133,6 +151,7 @@ export default {
     deleteBanner,
     getBannersByCategory,
     getBannersByAuthor,
-    incrementBannerRating
+    incrementBannerRating,
+    getBannerByProductID
     // updateProductQuantity,
 };
