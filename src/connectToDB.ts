@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import Joi from 'joi';
+// import Joi from 'joi';
 import { Users } from './interface';
 
 const userSchema = new Schema<Users>({

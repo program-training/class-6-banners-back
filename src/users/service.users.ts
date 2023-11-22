@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import usersDAL from './Dal.users';
 const crypto = require('crypto');
 import { generateUserPassword, comparePassword } from './secret'
-
+import bcrypt from 'bcrypt';
 const usersService = {
   getAllUsers: async () => usersDAL.getAllUsers(),
 
@@ -53,17 +53,18 @@ const usersService = {
 
     return { success: true, message: 'User updated successfully', user: updatedUser };
   },
-  
   loginUser: async (email:any, password:any) => {
+    console.log('Fetching user from DB with email:', email);
     const user = await usersDAL.getUserByEmail(email);
-    if (!user || !comparePassword(password, user.password)) {
-      throw new Error('Invalid email or password.');
+    if (!user || user.password !== password) {
+        throw new Error('Invalid email or password.');
     }
     if (!user.isAdmin) {
-      throw new Error('Access denied. Admin rights required.');
+        throw new Error('Access denied. Admin rights required.');
     }
     return { username: user.username, email: user.email };
 },
+
 
   changePassword: async (userId: string, newPassword: string) => {
     // בדיקה האם המשתמש קיים
@@ -84,29 +85,25 @@ const usersService = {
     return { success: true, message: 'הסיסמה עודכנה בהצלחה' };
   },
   
-changePasswordByEmail: async (email: string, newPassword: string) => {
-  // חיפוש המשתמש לפי ה-email
-  const user = await usersDAL.getUserByEmail(email);
-  console.log("user+ "+user);
+  changePasswordByEmail: async (email: string, newPassword: string) => {
+    // חיפוש המשתמש לפי ה-email
+    const user = await usersDAL.getUserByEmail(email);
+    console.log("user+ "+user);
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
   
-  if (!user) {
-    throw new Error('user not found');
-  }
-
-  // המרת הסיסמה החדשה
-  const hashedNewPassword = crypto.createHash('sha256').update(newPassword).digest('hex');
-
-  // עדכון הסיסמה במסד הנתונים
-  const updatedUser = await usersDAL.updateUserById(user._id, { password: hashedNewPassword });
-  console.log("update"+ updatedUser);
+    // עדכון הסיסמה במסד הנתונים ללא הצפנה
+    const updatedUser = await usersDAL.updateUserById(user._id, { password: newPassword });
+    console.log("update"+ updatedUser);
+    
+    if (!updatedUser) {
+      throw new Error('Error updating password.');
+    }
   
-  if (!updatedUser) {
-    throw new Error('Error updating password.');
-  }
-
-  return { success: true, message: '  The password has been successfully updated' };
-},
-
+    return { success: true, message: 'The password has been successfully updated' };
+  },
 };
 export default usersService;
 
