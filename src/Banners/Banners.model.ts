@@ -1,19 +1,6 @@
 import Joi from 'joi';
 import mongoose, { Document, Schema } from 'mongoose';
-
-export interface Banner extends Document {
-    _id: number;
-    image: {
-        url: string;
-        alt: string;
-    };
-    text: string;
-    createdAt: Date;
-    author: string;
-    category: string;
-    rating: number;
-    sale?: number;
-    }
+import { Banner } from '../interface';
 
 const bannerSchema = new Schema<Banner>({
     id: { type: Number, required: true },
