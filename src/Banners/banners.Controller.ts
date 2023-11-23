@@ -7,14 +7,12 @@ const getAllBanners = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log('Request received to get all products');
         const products = await productService.getAllBanners();
-        console.log('Retrieved products:', products);
         res.status(200).json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 
 // Get product by ID
 const getBannerById = async (req: Request, res: Response): Promise<void> => {
