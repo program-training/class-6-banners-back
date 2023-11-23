@@ -7,7 +7,6 @@ const getAllBanners = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log('Request received to get all products');
         const products = await productService.getAllBanners();
-        console.log('Retrieved products:', products);
         res.status(200).json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -18,7 +17,7 @@ const getAllBanners = async (req: Request, res: Response): Promise<void> => {
 
 // Get product by ID
 const getBannerById = async (req: Request, res: Response): Promise<void> => {
-    const bannerId = req.params.id; // Directly use the ID as a string
+    const bannerId = req.params.id; 
     try {
         const banner = await productService.getBannerById(bannerId); // Call the correct service method
         if (banner) {
