@@ -1,5 +1,5 @@
-import { Banner } from '../interface';
-import { BannerModel } from './Banners.model';
+
+import { BannerModel,Banner } from './Banners.model';
 
 const bannerService = {
     getAllBanners: async (): Promise<Banner[]> => {
