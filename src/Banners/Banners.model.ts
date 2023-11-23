@@ -13,6 +13,7 @@ export interface Banner extends Document {
     category: string;
     rating: number;
     sale?: number;
+    productID?: number;
     }
 
 const bannerSchema = new Schema<Banner>({
@@ -26,7 +27,8 @@ const bannerSchema = new Schema<Banner>({
     author: { type: String, required: true },
     category: { type: String, required: true },
     rating: { type: Number, required: true },
-    sale: { type: Number, required: false }
+    sale: { type: Number, required: false },
+    productID: { type: Number, required: true }
 }, { versionKey: false });
 
 const BannerModel = mongoose.model<Banner>('banner', bannerSchema, 'banners');
@@ -43,7 +45,7 @@ const bannerJoiSchema = Joi.object({
     category: Joi.string().required(),
     rating: Joi.number().required(),
     sale: Joi.number(),
-    productID: Joi.string().required(),
+    productID: Joi.number().required(),
 });
 
 export { BannerModel, bannerJoiSchema };
