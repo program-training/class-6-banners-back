@@ -1,6 +1,20 @@
 import Joi from 'joi';
 import mongoose, { Document, Schema } from 'mongoose';
-import { Banner } from '../interface';
+
+export interface Banner extends Document {
+    _id: number;
+    image: {
+        url: string;
+        alt: string;
+    };
+    text: string;
+    createdAt: Date;
+    author: string;
+    category: string;
+    rating: number;
+    sale?: number;
+    productID?: number;
+    }
 
 const bannerSchema = new Schema<Banner>({
     id: { type: Number, required: true },
@@ -13,7 +27,8 @@ const bannerSchema = new Schema<Banner>({
     author: { type: String, required: true },
     category: { type: String, required: true },
     rating: { type: Number, required: true },
-    sale: { type: Number, required: false }
+    sale: { type: Number, required: false },
+    productID: { type: Number, required: true }
 }, { versionKey: false });
 
 const BannerModel = mongoose.model<Banner>('banner', bannerSchema, 'banners');
@@ -30,7 +45,7 @@ const bannerJoiSchema = Joi.object({
     category: Joi.string().required(),
     rating: Joi.number().required(),
     sale: Joi.number(),
-    productID: Joi.string().required(),
+    productID: Joi.number().required(),
 });
 
 export { BannerModel, bannerJoiSchema };
