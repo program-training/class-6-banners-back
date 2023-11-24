@@ -14,7 +14,6 @@ const getAllBanners = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
 // Get product by ID
 const getBannerById = async (req: Request, res: Response): Promise<void> => {
     const bannerId = req.params.id; 
