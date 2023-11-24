@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi, { string } from 'joi';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface Banner extends Document {
@@ -34,6 +34,7 @@ const bannerSchema = new Schema<Banner>({
 const BannerModel = mongoose.model<Banner>('banner', bannerSchema, 'banners');
 
 const bannerJoiSchema = Joi.object({
+    _id: Joi.string(),
     id: Joi.number(),
     image: Joi.object({
         url: Joi.string().required(),

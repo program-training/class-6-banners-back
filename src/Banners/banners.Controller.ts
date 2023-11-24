@@ -16,7 +16,7 @@ const getAllBanners = async (req: Request, res: Response): Promise<void> => {
 
 // Get product by ID
 const getBannerById = async (req: Request, res: Response): Promise<void> => {
-    const bannerId = req.params.id; // Directly use the ID as a string
+    const bannerId = req.params.id; 
     try {
         const banner = await productService.getBannerById(bannerId); // Call the correct service method
         if (banner) {
