@@ -12,7 +12,6 @@ const usersService = {
       throw new Error('User with this email already exists.');
     }
 
-    // Add the user
     const newUser = await usersDAL.createUser(user);
     if (!newUser) throw new Error("faild to create user");
     
@@ -62,7 +61,7 @@ const usersService = {
     if (!user.isAdmin) {
         throw new Error('Access denied. Admin rights required.');
     }
-    return { username: user.username, email: user.email };
+    return { username: user.username, email: user.email,_id:user._id };
 },
 
 

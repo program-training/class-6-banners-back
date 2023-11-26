@@ -118,9 +118,7 @@ const loginUser = async (req: any, res: any) => {
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-
-        // יצירת JWT
-        const token = generateToken(user.email); // אם אין _id, אולי תרצה להשתמש בדוא"ל או בשם משתמש
+        const token = generateToken(user.email); 
         return res.status(200).json({ user, token });
     } catch (error) {
         if (error instanceof Error) {
