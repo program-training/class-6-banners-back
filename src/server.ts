@@ -7,7 +7,7 @@ import { connectToDatabase } from "./connectToDB";
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const api = process.env.MONGO
+export const api = process.env.MONGO || 'mongodb+srv://moshelapi:moshe206@cluster0.wdyimef.mongodb.net/banners?retryWrites=true&w=majority'
 
 const app = express();
 
