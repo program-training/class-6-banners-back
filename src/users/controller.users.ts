@@ -3,7 +3,12 @@ import { Types } from 'mongoose';
 import Joi from 'joi';
 import { UserModel } from './users.model';
 import { generateUserPassword, comparePassword } from './secret'
+import jwt from 'jsonwebtoken';
+const SECRET_KEY = 'erp';
 
+const generateToken = (userId: string) => {
+  return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '3h' });
+};
 
 const changePasswordSchema = Joi.object({
     email: Joi.string().email().required(), // ולידציה שהמחרוזת היא אימייל חוקי
@@ -105,7 +110,6 @@ const loginUser = async (req: any, res: any) => {
     const { email, password } = req.body;
     console.log('Attempting to login with email:', email, 'and password:', password);
 
-    // בדיקת ולידציה עם Joi
     const { error } = loginUserSchema.validate({ email, password });
     if (error) return res.status(400).json({ message: error.details[0].message });
 
@@ -114,7 +118,10 @@ const loginUser = async (req: any, res: any) => {
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        return res.status(200).json(user);
+
+        // יצירת JWT
+        const token = generateToken(user.email); // אם אין _id, אולי תרצה להשתמש בדוא"ל או בשם משתמש
+        return res.status(200).json({ user, token });
     } catch (error) {
         if (error instanceof Error) {
             res.status(401).json({ message: error.message });
@@ -123,6 +130,7 @@ const loginUser = async (req: any, res: any) => {
         }
     }
 };
+
 
 const deleteUserById = async (req: any, res: any) => {
     const userId = req.params.id;
