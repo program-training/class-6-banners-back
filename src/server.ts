@@ -20,8 +20,8 @@ app.use(morgan)
 
 
 
-const PORT = 8008;
-app.listen(PORT, () => console.log(`server run in port ${PORT}!`));
+const port = process.env.PORT || 8008
+app.listen(port, () => console.log(`server run in port ${port}!`));
 
 app.use('/api/banners', productRoute);
 app.use('/api/users', usersRoute);
