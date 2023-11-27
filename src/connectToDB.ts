@@ -1,13 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { Users } from './interface';
+import { Users, userSchema } from './interface';
 import { api } from './server';
 
-const userSchema = new Schema<Users>({
-    username: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    isAdmin: { type: Boolean, required: true },
-}, { versionKey: false });
+
 
 export { UserModel };
 

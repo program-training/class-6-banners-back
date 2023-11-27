@@ -1,12 +1,11 @@
 import { Types } from 'mongoose';
 import usersDAL from './Dal.users';
+import { UserInterface } from './users.model';
 const crypto = require('crypto');
-import { generateUserPassword, comparePassword } from './secret'
-import bcrypt from 'bcrypt';
 const usersService = {
   getAllUsers: async () => usersDAL.getAllUsers(),
 
-  registerUser: async (user:any) => {
+  registerUser: async (user:UserInterface) => {
     const existingUser = await usersDAL.getUserByEmail(user.email);
     if (existingUser) {
       throw new Error('User with this email already exists.');
@@ -19,7 +18,6 @@ const usersService = {
   },
   getUserById: async (userId: string) => {
     const user = await usersDAL.getUserById(userId);
-    console.log("service "+user);
     if (!user) {
       throw new Error('User not found.');
     }
@@ -34,17 +32,13 @@ const usersService = {
     return { success: true, message: 'User deleted successfully' };
   },
 
-  updateUserById: async (userId: Types.ObjectId, updateData: any) => {
-    // Optional: Validate updateData or check if the user exists
+  updateUserById: async (userId: Types.ObjectId, updateData: UserInterface) => {
     const existingUser = await usersDAL.getUserByMongoId(userId);
     if (!existingUser) {
       throw new Error('User not found.');
     }
 
-    // Optional: Additional validation or processing
-    // ...
-
-    // Call DAL method to update the user
+    
     const updatedUser = await usersDAL.updateUserById(userId, updateData);
     if (!updatedUser) {
       throw new Error('Error updating user.');
@@ -52,8 +46,7 @@ const usersService = {
 
     return { success: true, message: 'User updated successfully', user: updatedUser };
   },
-  loginUser: async (email:any, password:any) => {
-    console.log('Fetching user from DB with email:', email);
+  loginUser: async (email:string, password:string) => {
     const user = await usersDAL.getUserByEmail(email);
     if (!user || user.password !== password) {
         throw new Error('Invalid email or password.');
@@ -66,16 +59,13 @@ const usersService = {
 
 
   changePassword: async (userId: string, newPassword: string) => {
-    // בדיקה האם המשתמש קיים
     const user = await usersDAL.getUserById(userId);
     if (!user) {
       throw new Error('משתמש לא נמצא.');
     }
 
-    // המרת המחרוזת ל-ObjectId
     const objectId = new Types.ObjectId(userId);
 
-    // עדכון הסיסמה במסד הנתונים
     const updatedUser = await usersDAL.updateUserById(objectId, { password: newPassword });
     if (!updatedUser) {
       throw new Error('שגיאה בעדכון הסיסמה.');
@@ -85,17 +75,13 @@ const usersService = {
   },
   
   changePasswordByEmail: async (email: string, newPassword: string) => {
-    // חיפוש המשתמש לפי ה-email
     const user = await usersDAL.getUserByEmail(email);
-    console.log("user+ "+user);
     
     if (!user) {
       throw new Error('User not found');
     }
   
-    // עדכון הסיסמה במסד הנתונים ללא הצפנה
     const updatedUser = await usersDAL.updateUserById(user._id, { password: newPassword });
-    console.log("update"+ updatedUser);
     
     if (!updatedUser) {
       throw new Error('Error updating password.');
