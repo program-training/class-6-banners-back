@@ -4,8 +4,11 @@ import Joi from 'joi';
 export interface UserInterface {
     username: string;
     email: string;
-    password: string;
+    password: string|null;
     isAdmin: boolean;
+    passwordResetToken?: string|null;
+    passwordResetExpires?: Date|null;
+    tempPassword?: string|null;
 }
 
 const userSchema = new Schema<UserInterface>({
@@ -13,7 +16,9 @@ const userSchema = new Schema<UserInterface>({
     email: { type: String, required: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true },
-}, { versionKey: false });
+    tempPassword: { type: String, default: null },
+    passwordResetToken: { type: String, default: null },
+    passwordResetExpires: { type: Date, default: null },}, { versionKey: false });
 
 
 const UserModel = mongoose.model<UserInterface>('User', userSchema, 'users');
@@ -27,8 +32,8 @@ const userJoiSchema = Joi.object({
 });
 
 const changePasswordSchema = Joi.object({
-    email: Joi.string().email().required(), 
-    newPassword: Joi.string().min(5).required(), 
+    email: Joi.string().email().required(),
+    newPassword: Joi.string().min(5).required(),
 });
 
 
@@ -43,13 +48,13 @@ const registerUserSchema = Joi.object({
     username: Joi.string().min(3).max(30).required(),
     password: Joi.string().min(5).required(),
     email: Joi.string().email().required(),
-    isAdmin: Joi.boolean().required(), 
+    isAdmin: Joi.boolean().required(),
 });
 
 const updateUserSchema = Joi.object({
-    username: Joi.string().min(3).max(30),  
-    password: Joi.string().min(5),          
-    email: Joi.string().email(),            
-    isAdmin: Joi.boolean(), 
+    username: Joi.string().min(3).max(30),
+    password: Joi.string().min(5),
+    email: Joi.string().email(),
+    isAdmin: Joi.boolean(),
 });
-export { UserModel, userJoiSchema,registerUserSchema,updateUserSchema,changePasswordSchema,loginUserSchema,resetPasswordSchema };
+export { UserModel, userJoiSchema, registerUserSchema, updateUserSchema, changePasswordSchema, loginUserSchema, resetPasswordSchema };
