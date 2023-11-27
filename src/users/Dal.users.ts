@@ -1,5 +1,7 @@
 import { Types } from 'mongoose';
 import { UserModel } from './users.model'; 
+import { UserInterface } from './users.model'; 
+interface UserUpdateData extends Partial<UserInterface> {}
 
 const usersDAL = {
   getAllUsers: async () => {
@@ -14,7 +16,6 @@ const usersDAL = {
   getUserByEmail: async (email: string) => {
     try {
       const user= await UserModel.findOne({ email });
-      console.log('User found in DB:', user);
       return user
     } catch (error) {
       console.error('Error fetching user by email:', error);
@@ -26,7 +27,6 @@ const usersDAL = {
  getUserById :async (userId: string) => {
     try {
         const user = await UserModel.findById(userId);
-        console.log("Found User:");
         return user;
     } catch (error) {
         console.error('Error fetching user by ID:', error);
@@ -36,7 +36,6 @@ const usersDAL = {
  getUserByMongoId :async (userId: Types.ObjectId) => {
     try {
         const user = await UserModel.findById(userId);
-        console.log("Found User:");
         return user;
     } catch (error) {
         console.error('Error fetching user by ID:', error);
@@ -44,7 +43,7 @@ const usersDAL = {
     }
 },
 
-  updateUserById: async (userId: Types.ObjectId, updateData: any) => {
+  updateUserById: async (userId: Types.ObjectId, updateData: UserUpdateData) => {
     try {
       return await UserModel.findByIdAndUpdate(userId, updateData, { new: true });
     } catch (error) {
@@ -53,7 +52,7 @@ const usersDAL = {
     }
   },
 
-  createUser: async (user: any) => {
+  createUser: async (user: UserInterface) => {
     try {
       return await UserModel.create(user);
     } catch (error) {
@@ -70,6 +69,7 @@ const usersDAL = {
       throw error;
     }
   },
+ 
 
 };
 

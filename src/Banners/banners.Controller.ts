@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import productService from './banners.service';
 import { BannerModel, bannerJoiSchema,Banner } from './Banners.model';
 
-// Get all products
 const getAllBanners = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log('Request received to get all products');
@@ -14,24 +13,22 @@ const getAllBanners = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// Get product by ID
 const getBannerById = async (req: Request, res: Response): Promise<void> => {
     const bannerId = req.params.id; 
     try {
-        const banner = await productService.getBannerById(bannerId); // Call the correct service method
+        const banner = await productService.getBannerById(bannerId);
         if (banner) {
             res.status(200).json(banner);
         } else {
-            res.status(404).json({ message: 'Banner not found' }); // Update the message to reflect banners
+            res.status(404).json({ message: 'Banner not found' }); 
         }
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-// Get banners by category
 const getBannersByCategory = async (req: Request, res: Response): Promise<void> => {
-    const category = req.params.category; // Get the category from request parameters
+    const category = req.params.category; 
     try {
         const banners = await productService.getBannersByCategory(category);
         console.log('Retrieved products:', banners);
@@ -47,7 +44,6 @@ const getBannersByCategory = async (req: Request, res: Response): Promise<void> 
 };
 
 
-// Create new product
 const createBanner = async (req: Request, res: Response): Promise<void> => {
     const newProduct = req.body;
     try {
@@ -59,20 +55,20 @@ const createBanner = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateBanner = async (req: Request, res: Response): Promise<void> => {
-    const bannerId = req.params.id; // Use the ID as a string
+    const bannerId = req.params.id; 
     const updatedBanner = req.body;
     try {
-        const banner = await productService.updateBanner(bannerId, updatedBanner); // Call the correct service method
+        const banner = await productService.updateBanner(bannerId, updatedBanner); 
         if (banner) {
             res.status(200).json(banner);
         } else {
-            res.status(404).json({ message: 'Banner not found' }); // Update the message to reflect banners
+            res.status(404).json({ message: 'Banner not found' }); 
         }
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-// Get banners by author
+
 const getBannersByAuthor = async (req: Request, res: Response): Promise<void> => {
     const author = req.params.author;
     try {
@@ -151,5 +147,4 @@ export default {
     getBannersByAuthor,
     incrementBannerRating,
     getBannerByProductID
-    // updateProductQuantity,
 };
