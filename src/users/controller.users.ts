@@ -172,6 +172,7 @@ const sendVerificationEmail = async (email: string, url: string) => {
 
 const verifyPasswordChange = async (req: Request, res: Response) => {
     const token = req.query.token;
+    const htmlFilePath = path.join(__dirname, 'success.html')
 
     if (typeof token !== 'string') {
         return res.status(400).json({ message: 'Invalid token format' });
@@ -180,7 +181,8 @@ const verifyPasswordChange = async (req: Request, res: Response) => {
     try {
         const result = await usersService.verifyPasswordChange(token);
         if (result.success) {
-            res.status(200).send('<html><body><p>Password change verified and updated successfully.</p></body></html>');         } else {
+            res.status(200).sendFile(htmlFilePath)         } 
+            else {
             res.status(400).json({ message: 'Invalid or expired token.' });
         }
     } catch (error) {
