@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { UserModel } from './users.model'; 
 import { UserInterface } from './users.model'; 
 interface UserUpdateData extends Partial<UserInterface> {}
@@ -28,7 +28,7 @@ const usersDAL = {
         { 
           tempPassword: tempPassword,
           passwordResetToken: token,
-          passwordResetExpires: new Date(Date.now() + 3600000) // זמן תפוגה של שעה אחת
+          passwordResetExpires: new Date(Date.now() + 3600000) 
         }, 
         { new: true });
     } catch (error) {
@@ -92,7 +92,8 @@ findUserByPasswordResetToken: async (token: string) => {
       throw error;
     }
   },
-  savePasswordResetToken: async (userId:any, token:any, expiration:any) => {
+
+  savePasswordResetToken: async (userId: mongoose.Types.ObjectId | string, token: string, expiration: Date): Promise<mongoose.Document | null> => {
     try {
       console.log('Saving password reset token for user:', userId);
       return await UserModel.findByIdAndUpdate(userId, 
@@ -106,7 +107,7 @@ findUserByPasswordResetToken: async (token: string) => {
       throw error;
     }
   },
-  resetPasswordWithToken: async (token:any, newPassword:any) => {
+resetPasswordWithToken: async (token: string, newPassword: string): Promise<UserInterface | null> => {
     try {
       const user = await UserModel.findOne({ 
         passwordResetToken: token, 

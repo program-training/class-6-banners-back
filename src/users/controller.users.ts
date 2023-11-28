@@ -6,11 +6,12 @@ import { generateUserPassword, comparePassword } from './secret'
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
+const path = require('path');
 const nodemailer = require('nodemailer');
 const SECRET_KEY = 'erp';
 
 const generateToken = (userId: string) => {
-  return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '3h' });
+    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '3h' });
 };
 
 const getAlllUsers = async (req: Request, res: Response) => {
@@ -86,7 +87,7 @@ const loginUser = async (req: Request, res: Response) => {
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        const token = generateToken(user.email); 
+        const token = generateToken(user.email);
         return res.status(200).json({ user, token });
     } catch (error) {
         if (error instanceof Error) {
@@ -132,7 +133,7 @@ const changePassword = async (req: Request, res: Response) => {
 
         const token = generateToken(user._id.toString());
         await usersService.saveTemporaryPasswordAndToken(email, newPassword, token);
-        
+
         const verificationUrl = `http://localhost:8008/api/users/verifypasswordchange?token=${token}`;
 
         try {
@@ -147,7 +148,7 @@ const changePassword = async (req: Request, res: Response) => {
     }
 };
 
-const sendVerificationEmail = async (email:any, url:any) => {
+const sendVerificationEmail = async (email: string, url: string) => {
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -171,7 +172,6 @@ const sendVerificationEmail = async (email:any, url:any) => {
 const verifyPasswordChange = async (req: Request, res: Response) => {
     const token = req.query.token;
 
-    // בדיקה שהטוקן הוא מחרוזת ולא undefined או מערך של מחרוזות
     if (typeof token !== 'string') {
         return res.status(400).json({ message: 'Invalid token format' });
     }
@@ -179,7 +179,7 @@ const verifyPasswordChange = async (req: Request, res: Response) => {
     try {
         const result = await usersService.verifyPasswordChange(token);
         if (result.success) {
-            res.status(200).json({ message: 'Password change verified and updated successfully.' });
+            res.status(200).sendFile(path.join(__dirname, 'success.html'));
         } else {
             res.status(400).json({ message: 'Invalid or expired token.' });
         }
