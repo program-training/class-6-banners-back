@@ -180,9 +180,7 @@ const verifyPasswordChange = async (req: Request, res: Response) => {
     try {
         const result = await usersService.verifyPasswordChange(token);
         if (result.success) {
-            console.log("hidden password");
-            res.status(200).sendFile(path.join(' ./success.html'));
-        } else {
+            res.status(200).send('<html><body><p>Password change verified and updated successfully.</p></body></html>');         } else {
             res.status(400).json({ message: 'Invalid or expired token.' });
         }
     } catch (error) {
