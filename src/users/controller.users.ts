@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
 import { secret_key, server } from '../server';
+import { log } from 'console';
 const path = require('path');
 const nodemailer = require('nodemailer');
 
@@ -179,7 +180,8 @@ const verifyPasswordChange = async (req: Request, res: Response) => {
     try {
         const result = await usersService.verifyPasswordChange(token);
         if (result.success) {
-            res.status(200).sendFile(path.join(__dirname, 'success.html'));
+            console.log("hidden password");
+            res.status(200).sendFile(path.join(__dirname, ''));
         } else {
             res.status(400).json({ message: 'Invalid or expired token.' });
         }
