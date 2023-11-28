@@ -6,10 +6,9 @@ import { generateUserPassword, comparePassword } from './secret'
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
+import { secret_key, server } from '../server';
 const path = require('path');
 const nodemailer = require('nodemailer');
-const secret_key = process.env.SECRET_KEY || "erp"
-const server = process.env.MY_SERVER ||"aa"
 
 const generateToken = (userId: string) => {
     return jwt.sign({ userId }, secret_key, { expiresIn: '3h' });
