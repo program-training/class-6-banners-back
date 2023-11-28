@@ -5,13 +5,13 @@ import { UserModel, changePasswordSchema, loginUserSchema, registerUserSchema, u
 import { generateUserPassword, comparePassword } from './secret'
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-
+import usersDAL from './Dal.users';
+const nodemailer = require('nodemailer');
 const SECRET_KEY = 'erp';
 
 const generateToken = (userId: string) => {
   return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '3h' });
 };
-
 
 const getAlllUsers = async (req: Request, res: Response) => {
     try {
@@ -114,25 +114,82 @@ const deleteUserById = async (req: Request, res: Response) => {
         }
     }
 
+
 };
 const changePassword = async (req: Request, res: Response) => {
-    
     const { email, newPassword } = req.body;
 
     const { error } = changePasswordSchema.validate({ email, newPassword });
-    if (error) return res.status(400).json({ message: error.details[0].message });
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
 
     try {
-        const result = await usersService.changePasswordByEmail(email, newPassword);
-        res.status(200).json({ message: 'Password changed successfully' });
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(500).json({ message: error.message });
-        } else {
-            res.status(500).json({ message: 'An unknown error occurred' });
+        const user = await usersDAL.getUserByEmail(email);
+        if (!user) {
+            throw new Error('User not found');
         }
+
+        const token = generateToken(user._id.toString());
+        await usersService.saveTemporaryPasswordAndToken(email, newPassword, token);
+        
+        const verificationUrl = `http://localhost:8008/api/users/verifypasswordchange?token=${token}`;
+
+        try {
+            await sendVerificationEmail(email, verificationUrl);
+            res.status(200).json({ message: 'Verification email sent. Please check your email to confirm password change.' });
+        } catch (emailError) {
+            console.error('Error sending verification email:', emailError);
+            res.status(500).json({ message: 'Failed to send verification email.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An unknown error occurred' });
     }
 };
+
+const sendVerificationEmail = async (email:any, url:any) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: 'idoelishar81@gmail.com',
+            pass: 'oqni opjs ggto cpjo'
+        }
+    });
+
+    const mailOptions = {
+        from: 'idoelishar81@gmail.com',
+        to: email,
+        subject: 'Password Reset',
+        html: `<p>You requested a password reset. Click <a href="${url}">here</a> to reset your password.</p>`
+    };
+
+    await transporter.sendMail(mailOptions);
+};
+
+const verifyPasswordChange = async (req: Request, res: Response) => {
+    const token = req.query.token;
+
+    // בדיקה שהטוקן הוא מחרוזת ולא undefined או מערך של מחרוזות
+    if (typeof token !== 'string') {
+        return res.status(400).json({ message: 'Invalid token format' });
+    }
+
+    try {
+        const result = await usersService.verifyPasswordChange(token);
+        if (result.success) {
+            res.status(200).json({ message: 'Password change verified and updated successfully.' });
+        } else {
+            res.status(400).json({ message: 'Invalid or expired token.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred during password verification.' });
+    }
+};
+
+
+
 
 
 
@@ -146,5 +203,6 @@ export default {
     getUserByID,
     updateUserById,
     deleteUserById,
-    changePassword
-};
+    changePassword,
+    verifyPasswordChange
+}
