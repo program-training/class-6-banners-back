@@ -172,7 +172,6 @@ const sendVerificationEmail = async (email: string, url: string) => {
 
 const verifyPasswordChange = async (req: Request, res: Response) => {
     const token = req.query.token;
-    const htmlFilePath = path.join(__dirname, 'success.html')
 
     if (typeof token !== 'string') {
         return res.status(400).json({ message: 'Invalid token format' });
@@ -181,8 +180,66 @@ const verifyPasswordChange = async (req: Request, res: Response) => {
     try {
         const result = await usersService.verifyPasswordChange(token);
         if (result.success) {
-            res.status(200).sendFile(htmlFilePath)         } 
-            else {
+            console.log("hidden password");
+            res.status(200).send(`<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Password Change Success</title>
+                <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            background-color: #E4F5FC;
+                            margin: 0;
+                            height: 100vh;
+                            display: flex;
+                            flex-direction: column; 
+                            justify-content: center;
+                            align-items: center;
+                            text-align: center;
+                        }
+                
+                        .container {
+                            display: flex;
+                            flex-direction: column; 
+                            align-items: center;
+                        }
+                
+                        .message {
+                            background-color: #FFFFFF;
+                            padding: 20px;
+                            border-radius: 10px; 
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+                            max-width: 70%; 
+                            margin: 20px; 
+                        }
+                
+                        a {
+                            text-decoration: none;
+                            color: #3498db;
+                            font-weight: bold;
+                            margin-top: 20px;
+                            display: inline-block;
+                            padding: 10px 20px; 
+                            border-radius: 5px;
+                            border: 2px solid #3498db; 
+                            transition: background-color 0.3s, color 0.3s; 
+                        }
+                
+                        a:hover {
+                            background-color: #3498db; 
+                            color: #FFFFFF; 
+                        }
+                </style>
+            </head>
+            <body>
+                <div class="message">Password change verified and updated successfully.</div>
+                <div><a href="https://bannersad.onrender.com/" target="_blank">Back to login</a></div>
+            </body>
+            </html>
+            `);
+        } else {
             res.status(400).json({ message: 'Invalid or expired token.' });
         }
     } catch (error) {
