@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "./middleware/morgen/cors/cors";
+import cors from "./middleware/cors/cors";
 import morgan from "./middleware/morgen/morgen";
 import usersRoute from './users/routes.users';
 import productRoute from './Banners/Banners.Routes';
@@ -7,7 +7,7 @@ import { connectToDatabase } from "./connectToDB";
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const api = process.env.MONGO || 'mongodb+srv://moshelapi:moshe206@cluster0.wdyimef.mongodb.net/banners?retryWrites=true&w=majority'
+export const api = process.env.MONGO || ''
 
 const app = express();
 

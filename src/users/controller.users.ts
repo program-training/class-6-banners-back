@@ -8,10 +8,11 @@ import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
 const path = require('path');
 const nodemailer = require('nodemailer');
-const SECRET_KEY = 'erp';
+const secret_key = process.env.SECRET_KEY || ""
+const server = process.env.MY_SERVER ||""
 
 const generateToken = (userId: string) => {
-    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '3h' });
+    return jwt.sign({ userId }, secret_key, { expiresIn: '3h' });
 };
 
 const getAlllUsers = async (req: Request, res: Response) => {
@@ -134,7 +135,7 @@ const changePassword = async (req: Request, res: Response) => {
         const token = generateToken(user._id.toString());
         await usersService.saveTemporaryPasswordAndToken(email, newPassword, token);
 
-        const verificationUrl = `http://localhost:8008/api/users/verifypasswordchange?token=${token}`;
+        const verificationUrl = `${server}/api/users/verifypasswordchange?token=${token}`;
 
         try {
             await sendVerificationEmail(email, verificationUrl);
