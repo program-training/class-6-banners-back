@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import usersService from './service.users';
+
 interface CustomRequest extends Request {
   user?: { id: string, isAdmin: boolean; username: string, email: string, password: string; };
 }
@@ -20,6 +22,9 @@ export const hasUserPermission = (req: CustomRequest, res: Response, next: NextF
   }
   next();
 };
+
+
+
 
 
 

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "./middleware/morgen/cors/cors";
 import morgan from "./middleware/morgen/morgen";
 import usersRoute from './users/routes.users';
-import productRoute from './Banners/Banners.Route';
+import productRoute from './Banners/Banners.Routes';
 import { connectToDatabase } from "./connectToDB";
 import dotenv from 'dotenv';
 dotenv.config();

@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const generateToken = () => {
   return crypto.randomBytes(20).toString('hex');
 };
-const sendVerificationEmail = async (email: any, url: any) => {
+const sendVerificationEmail = async (email: string, url: string) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -107,41 +107,17 @@ const usersService = {
     return { success: true, message: 'הסיסמה עודכנה בהצלחה' };
   },
 
-  changePasswordByEmail: async (email: string) => {
-    const user = await usersDAL.getUserByEmail(email);
-    console.log('Changing password for email:', email);
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    // יצירת טוקן אימות וזמן תפוגה
-    const token = generateToken();
-    console.log('Generated token:', token);
-    const expiration = new Date(Date.now() + 3600000); // זמן תפוגה 1 שעה מהזמן הנוכחי
-
-    // שמירת הטוקן וזמן התפוגה במשתמש
-    await usersDAL.savePasswordResetToken(user._id, token, expiration);
-    // שליחת מייל עם קישור לאימות
-    const verificationUrl = `http://localhost:8008/api/users/reset-password?token=${token}`;
-    await sendVerificationEmail(email, verificationUrl);
-    console.log('Sent verification email to:', email);
-    return { success: true, message: 'Verification email sent. Please check your email to confirm password change.' };
-  },
-
 
   verifyPasswordChange: async (token: string) => {
-    // חיפוש המשתמש לפי הטוקן
     const user = await usersDAL.findUserByPasswordResetToken(token);
     if (!user) {
       throw new Error('Invalid or expired token');
     }
 
-    // בדיקה אם הטוקן עדיין בתוקף
     if (user.passwordResetExpires && new Date(user.passwordResetExpires) < new Date()) {
       throw new Error('Token has expired');
     }
 
-    // עדכון הסיסמה לסיסמה החדשה שנשמרה באופן זמני
     const updatedUser = await usersDAL.updateUserById(user._id, { password: user.tempPassword, tempPassword: null, passwordResetToken: null, passwordResetExpires: null });
     if (!updatedUser) {
       throw new Error('Error updating password');
