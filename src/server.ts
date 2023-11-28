@@ -8,8 +8,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const api = process.env.MONGO || ''
-export const secret_key = process.env.SECRET_KEY || ""
-export const server = process.env.MY_SERVER ||""
+export const secret_key = process.env.SECRET_KEY || "erp"
+export const server = process.env.MY_SERVER ||"https://serverbanners.onrender.com"
 
 const app = express();
 
