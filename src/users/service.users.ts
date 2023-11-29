@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
 import usersDAL from './Dal.users';
 import { UserInterface } from './users.model';
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 const generateToken = () => {
   return crypto.randomBytes(20).toString('hex');
 };
