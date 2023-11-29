@@ -7,9 +7,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
 import { secret_key, server } from '../server';
-import { log } from 'console';
-const path = require('path');
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const generateToken = (userId: string) => {
     return jwt.sign({ userId }, secret_key, { expiresIn: '3h' });
@@ -145,7 +143,7 @@ const changePassword = async (req: Request, res: Response) => {
             res.status(500).json({ message: 'Failed to send verification email.' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'An unknown error occurred' });
+        res.status(500).json({ message: 'User not found' });
     }
 };
 
