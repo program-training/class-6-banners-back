@@ -11,7 +11,7 @@ export const api = process.env.MONGO || ''
 export const secret_key = process.env.SECRET_KEY || "erp"
 export const server = process.env.MY_SERVER ||"https://serverbanners.onrender.com"
 
-const app = express();
+export const app = express();
 
 connectToDatabase();
 
