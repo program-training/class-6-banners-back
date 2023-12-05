@@ -1,7 +1,8 @@
 const { gql } = require('apollo-server');
 const typeDefs = gql`
   type Banner {
-    id: Int!
+    _id: String
+    id:Int
     image: Image
     text: String
     createdAt: String
@@ -18,6 +19,7 @@ const typeDefs = gql`
   }
 
   input BannerInput {
+    id: Int
     image: ImageInput
     text: String
     author: String
@@ -34,7 +36,7 @@ const typeDefs = gql`
 
   type Query {
     getAllBanners: [Banner]
-    getBannerById(id: Int!): Banner
+    getBannerById(_id: String!): Banner
     getBannersByCategory(category: String!): [Banner]
     getBannersByAuthor(author: String!): [Banner]
     getBannerByProductID(productID: Int!): Banner

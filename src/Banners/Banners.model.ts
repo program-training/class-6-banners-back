@@ -2,7 +2,7 @@ import Joi, { string } from 'joi';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface Banner extends Document {
-    _id: number;
+    id: number;
     image: {
         url: string;
         alt: string;

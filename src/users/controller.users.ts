@@ -6,7 +6,7 @@ import { UserModel, changePasswordSchema, loginUserSchema, registerUserSchema, u
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
-import { secret_key, server } from '../server';
+import { secret_key } from '../server';
 import nodemailer from 'nodemailer';
 
 const generateToken = (userId: string) => {
@@ -133,7 +133,7 @@ const changePassword = async (req: Request, res: Response) => {
         const token = generateToken(user._id.toString());
         await usersService.saveTemporaryPasswordAndToken(email, newPassword, token);
 
-        const verificationUrl = `${server}/users/verifypasswordchange?token=${token}`;
+        const verificationUrl = `https://serverbanners.onrender.com/users/verifypasswordchange?token=${token}`;
 
         try {
             await sendVerificationEmail(email, verificationUrl);

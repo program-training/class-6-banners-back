@@ -1,11 +1,12 @@
 
-import { BannerModel,Banner } from './Banners.model';
+import { BannerModel, Banner } from './Banners.model';
 
 const bannerService = {
     getAllBanners: async (): Promise<Banner[]> => {
         return await BannerModel.find({});
     },
     getBannerById: async (_id: string): Promise<Banner | null> => {
+        console.log(await BannerModel.findOne({ _id }))
         return await BannerModel.findOne({ _id });
     },
     createBanner: async (banner: Banner): Promise<Banner> => {

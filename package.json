@@ -20,6 +20,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.5",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.16",
     "@types/hapi__joi": "^17.1.13",

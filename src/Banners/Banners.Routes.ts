@@ -10,8 +10,8 @@ router.get('/cat/:category', bannerController.getBannersByCategory);
 router.get('/author/:author', bannerController.getBannersByAuthor);
 router.get('/product/:productID', bannerController.getBannerByProductID);
 
-router.post('/', authenticateToken, bannerController.createBanner);
-router.put('/:id', authenticateToken, bannerController.updateBanner);
+router.post('/', bannerController.createBanner);
+router.put('/:id', bannerController.updateBanner);
 router.put('/addrating/:id', authenticateToken, bannerController.incrementBannerRating);
 router.delete('/:id', authenticateToken, bannerController.deleteBanner);
 

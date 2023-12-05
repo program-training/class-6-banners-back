@@ -17,16 +17,99 @@ interface MutationResolvers {
 
 const resolvers: { Query: QueryResolvers, Mutation: MutationResolvers } = {
     Query: {
-        getAllBanners: () => bannerService.getAllBanners(),
-        getBannerById: (_, { _id }) => bannerService.getBannerById(_id),
-        getBannersByCategory: (_, { category }) => bannerService.getBannersByCategory(category),
-        getBannersByAuthor: (_, { author }) => bannerService.getBannersByAuthor(author),
-        getBannerByProductID: (_, { productID }) => bannerService.getBannerByProductID(productID),
+        getAllBanners: async () => {
+            try {
+                console.log('Request received to get all banners');
+                const banners = await bannerService.getAllBanners();
+                return banners;
+            } catch (error) {
+                console.error('Error fetching banners:', error);
+                throw new Error('Internal server error');
+            }
+        },
+        getBannerById: async (_, args) => {
+            try {
+                const banner = await bannerService.getBannerById(args._id);
+                if (!banner) {
+                    throw new Error('Banner not found');
+                }
+                return banner;
+            } catch (error) {
+                console.error('Error fetching banner by ID:', error);
+                throw new Error('Internal server error');
+            }
+        },
+        getBannersByCategory: async (_, args) => {
+            try {
+                const banners = await bannerService.getBannersByCategory(args.category);
+                if (banners.length === 0) {
+                    throw new Error('No banners found in this category');
+                }
+                return banners;
+            } catch (error) {
+                console.error('Error fetching banners by category:', error);
+                throw new Error('Internal server error');
+            }
+        },
+        getBannersByAuthor: async (_, args) => {
+            try {
+                const banners = await bannerService.getBannersByAuthor(args.author);
+                if (banners.length === 0) {
+                    throw new Error('No banners found for this author');
+                }
+                return banners;
+            } catch (error) {
+                console.error('Error fetching banners by author:', error);
+                throw new Error('Internal server error');
+            }
+        },
+        getBannerByProductID: async (_, args) => {
+            try {
+                const banner = await bannerService.getBannerByProductID(args.productID);
+                if (!banner) {
+                    throw new Error('Banner not found with the given product ID');
+                }
+                return banner;
+            } catch (error) {
+                console.error('Error fetching banner by product ID:', error);
+                throw new Error('Internal server error');
+            }
+        },
     },
     Mutation: {
-        createBanner: (_, { banner }) => bannerService.createBanner(banner),
-        updateBanner: (_, { _id, updatedBanner }) => bannerService.updateBanner(_id, updatedBanner),
-        deleteBanner: (_, { _id }) => bannerService.deleteBanner(_id),
+        createBanner: async (_, args) => {
+            try {
+                const newBanner = await bannerService.createBanner(args.banner);
+                return newBanner;
+            } catch (error) {
+                console.error('Error creating banner:', error);
+                throw new Error('Internal server error');
+            }
+        },
+        updateBanner: async (_, args) => {
+            try {
+                const updatedBanner = await bannerService.updateBanner(args._id, args.updatedBanner);
+                if (!updatedBanner) {
+                    throw new Error('Banner not found');
+                }
+                return updatedBanner;
+            } catch (error) {
+                console.error('Error updating banner:', error);
+                throw new Error('Internal server error');
+            }
+        },
+        deleteBanner: async (_, args) => {
+            try {
+                const deletedBanner = await bannerService.deleteBanner(args._id);
+                if (!deletedBanner) {
+                    throw new Error('Banner not found');
+                }
+                return deletedBanner;
+            } catch (error) {
+                console.error('Error deleting banner:', error);
+                throw new Error('Internal server error');
+            }
+        },
     }
 };
 
