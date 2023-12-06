@@ -4,7 +4,7 @@ import morgan from "./middleware/morgen/morgen";
 import usersRoute from './users/routes.users';
 import productRoute from './Banners/Banners.Routes';
 import productRoute2 from './products/Products.Routes';
-
+import bannerClicksRoute from './ProductClicks/productClicks.Routes'
 import { connectToDatabase } from "./connectToDB";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -30,4 +30,6 @@ app.listen(port, () => console.log(`server run in port ${port}!`));
 app.use('/banners', productRoute);
 app.use('/users', usersRoute);
 app.use('/products', productRoute2);
+app.use('/bannerclicks', bannerClicksRoute);
+
 
