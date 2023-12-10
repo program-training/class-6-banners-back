@@ -1,8 +1,8 @@
 import usersService from './service.users';
 import { Types } from 'mongoose';
-import Joi from 'joi';
+// import Joi from 'joi';
 import { UserModel, changePasswordSchema, loginUserSchema, registerUserSchema, updateUserSchema } from './users.model';
-import { generateUserPassword, comparePassword } from './secret'
+// import { generateUserPassword, comparePassword } from './secret'
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import usersDAL from './Dal.users';
@@ -133,7 +133,7 @@ const changePassword = async (req: Request, res: Response) => {
         const token = generateToken(user._id.toString());
         await usersService.saveTemporaryPasswordAndToken(email, newPassword, token);
 
-        const verificationUrl = `${server}/api/users/verifypasswordchange?token=${token}`;
+        const verificationUrl = `${server}/users/verifypasswordchange?token=${token}`;
 
         try {
             await sendVerificationEmail(email, verificationUrl);
