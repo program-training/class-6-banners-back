@@ -3,7 +3,7 @@ import productClicksController from './productClicks.Controller';
 const router: Router = express.Router();
 
 router.get('/', productClicksController.getAllProductClicks);
-router.get('/:id', productClicksController.getProductClicksByBannerId);
+router.get('/:id', productClicksController.getByBannerById);
 
 
 
